@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\LaptopContoller;
 use App\Http\Controllers\HelloControoler;
 use Illuminate\Support\Facades\Route;
 
@@ -15,3 +16,5 @@ Route::get("/hello", function(){
 
 Route::get('/hello2', [HelloControoler::class, 'coba']);
 Route::get('/hello3{angka}', [HelloControoler::class, 'cobaCoba']);
+
+Route::get('/laptop', [LaptopContoller::class, 'showLaptops']);

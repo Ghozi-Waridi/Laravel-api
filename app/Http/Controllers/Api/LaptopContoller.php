@@ -5,13 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\laptop;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;   
+use Illuminate\Support\Facades\Validator;
 
 class LaptopContoller extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $laptop = laptop::all();
@@ -26,17 +23,11 @@ class LaptopContoller extends Controller
         );
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
 
@@ -46,132 +37,127 @@ class LaptopContoller extends Controller
             'required' => ':attribute Harus di isi',
             'name' => 'Kolom :attribute masih kosong',
             'price' => 'Kolom :attribute masih kosong',
-            'type.required' => 'Kolom :attribute masih kosong',
-        ];   
+            'type' => 'Kolom :attribute masih kosong',
+        ];
 
-        $validator = Validator::make($request -> all(), [
-            'name' => 'required | name',
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
             'price' => 'required',
-            'type' => ' required | type',
+            'type' => ' required',
         ], $messages);
 
-        if($validator -> fails()){
+        if ($validator->fails()) {
             return response()->json([
                 'status' => false,
                 'massage' => 'Data Laptop Gagal di tambahkan',
-                'erors' => $validator -> errors(),
+                'erors' => $validator->errors(),
             ], 422);
         }
 
-        $laptop -> name = $request -> name;
-        $laptop -> price = $request -> price;
-        $laptop -> type = $request -> type;
-        $laptop -> save();
+        $laptop->name = $request->name;
+        $laptop->price = $request->price;
+        $laptop->type = $request->type;
+        $laptop->save();
 
-        return response() -> json([
-          'status' => true,
-          'message' => 'Data Laptop Berhasil di tambahkan',
-          'data' => $laptop,
+        return response()->json([
+            'status' => true,
+            'message' => 'Data Laptop Berhasil di tambahkan',
+            'data' => $laptop,
         ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $dataLaptop = Laptop::find($id);
 
-        if(!$dataLaptop){
-            return response() -> json([
+        if (!$dataLaptop) {
+            return response()->json([
                 'Status' => false,
                 "massage" => "Data Laptop Tida ditemukan",
             ], 404);
         }
 
-        return response() -> json([
+        return response()->json([
             "Status" => true,
             "massage" => "Data Laptop Ditemukan",
             "data" => $dataLaptop
-        ],200);
+        ], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $laptop = Laptop::find($id);
 
         $messages = [
-            'required' => 'Kolom :attribute Harus di isi',
-            'name' => 'name :attribute masih kosong',
-            'price' => 'price :attribute masih kosong',
-            'type' => 'type :attribute masih kosong',
-        ];   
+            'required' => 'Kolom :attribute Harus di isi', // field ini sudah ada dan sudah sesuai dengan apa yang ada seperti string, email, number, required, size, min dkk
+            //relasi di laravel
+        ];
 
-        $validator = Validator::make($request -> all(), [
-            'name' => 'reuired | name',
-            'price' => 'reuired | price',
-            'type' => 'reuired | type',
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'price' => 'required',
+            'type' => 'required',
         ], $messages);
 
-        if($validator -> fails()){
+        if ($validator->fails()) {
             return response()->json([
                 'status' => false,
                 'massage' => 'Data Laptop Gagal di tambahkan',
-                'erors' => $validator -> errors(),
+                'erors' => $validator->errors(),
             ], 422);
         }
 
-        if($laptop == null){
-            return response() -> json([
+        if ($laptop == null) {
+            return response()->json([
                 'status' => false,
                 'message' => 'Data Laptop Tidak Ditemukan',
             ], 404);
-
         }
 
-        $laptop -> name = $request -> name;
-        $laptop -> price = $request -> price;
-        $laptop -> type = $request -> type;
-        $laptop -> save();
+        $laptop->name = $request->name;
+        $laptop->price = $request->price;
+        $laptop->type = $request->type;
+        $laptop->save();
 
-        return response() -> json([
-          'status' => true,
-          'message' => 'Data Laptop Berhasil di update',
-          'data' => $laptop,
+        return response()->json([
+            'status' => true,
+            'message' => 'Data Laptop Berhasil di update',
+            'data' => $laptop,
         ], 201);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $laptop = Laptop::find($id);
 
-        if($laptop == null){
-            return response() -> json([
+        if ($laptop == null) {
+            return response()->json([
                 'status' => false,
                 'massage' => "Data Leptop Tidak Ditemukan"
             ], 404);
         }
 
-        $laptop -> delete();
+        $laptop->delete();
 
         return response()->json([
             "status" => true,
             "Massage" => "Data Berhasil di hapus",
             "Data" => $laptop,
         ], 201);
+    }
+
+
+    public function showLaptops()
+    {
+        $laptop = Laptop::all();
+
+        return view("laptop", [
+            "laptop" => $laptop
+        ]);
     }
 }
